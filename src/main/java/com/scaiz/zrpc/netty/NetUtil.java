@@ -1,5 +1,6 @@
 package com.scaiz.zrpc.netty;
 
+import java.net.InetSocketAddress;
 import java.util.regex.Pattern;
 
 public class NetUtil {
@@ -8,5 +9,10 @@ public class NetUtil {
 
     public static boolean isValidIp(String ip) {
         return ip != null && IP_PATTERN.matcher(ip).matches();
+    }
+
+
+    public static String toStringAddress(InetSocketAddress address) {
+        return address.getAddress().getHostAddress() + ":" + address.getPort();
     }
 }

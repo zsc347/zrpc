@@ -22,6 +22,9 @@ public class NettyServerConfig {
 
     private  int maxReadIdleSeconds = 60*60;
 
+
+    private int serverShutdownWaitTime = 10; // s
+
     protected static int WORKER_THREAD_SIZE;
 
     private boolean enableServerPooledByteBufferAllocator;
@@ -134,5 +137,9 @@ public class NettyServerConfig {
 
     public void setEnableServerPooledByteBufferAllocator(boolean enableServerPooledByteBufferAllocator) {
         this.enableServerPooledByteBufferAllocator = enableServerPooledByteBufferAllocator;
+    }
+
+    public int getServerShutdownWaitTime() {
+        return serverShutdownWaitTime;
     }
 }

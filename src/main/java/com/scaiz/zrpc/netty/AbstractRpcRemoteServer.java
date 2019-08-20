@@ -1,10 +1,12 @@
 package com.scaiz.zrpc.netty;
 
-import com.scaiz.zrpc.RemotingService;
+import com.scaiz.zrpc.rpc.RemoteService;
 import com.scaiz.zrpc.common.NamedThreadFactory;
 import com.scaiz.zrpc.protocol.ProtocolV1Decoder;
 import com.scaiz.zrpc.protocol.ProtocolV1Encoder;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -19,9 +21,10 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractRpcRemoteServer extends AbstractRpcRemote implements RemotingService {
+public abstract class AbstractRpcRemoteServer extends AbstractRpcRemote implements RemoteService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRpcRemoteServer.class);
     private String host;
@@ -111,8 +114,39 @@ public abstract class AbstractRpcRemoteServer extends AbstractRpcRemote implemen
 
         if (nettyServerConfig.isEnableServerPooledByteBufferAllocator()) {
             this.serverBootstrap.childOption(ChannelOption.ALLOCATOR,
-                    NettyServerConfig.)
+                    NettyServerConfig.DIRECT_BYTE_BUF_ALLOCATOR);
+        }
+
+        try {
+            ChannelFuture future = this.serverBootstrap.bind(host, port).sync();
+            LOGGER.info("Server started ... ");
+            initialized.set(true);
+            future.channel().closeFuture().sync();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
+
+    @Override
+    public void shutdown() {
+        try {
+            LOGGER.debug("Shutdown server ...");
+            if (initialized.get()) {
+                TimeUnit.SECONDS.sleep(nettyServerConfig.getServerShutdownWaitTime());
+            }
+            this.eventLoopGroupBoss.shutdownGracefully();
+            this.eventLoopGroupWorker.shutdownGracefully();
+        } catch (Exception exx) {
+            LOGGER.error(exx.getMessage());
+        }
+    }
+
+
+    @Override
+    public void destroyChannel(Channel channel) {
+        LOGGER.debug("Destroy channel " + channel);
+        channel.disconnect();
+        channel.close();
+    }
 }

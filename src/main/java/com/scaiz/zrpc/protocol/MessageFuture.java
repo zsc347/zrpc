@@ -1,6 +1,6 @@
 package com.scaiz.zrpc.protocol;
 
-import com.scaiz.zrpc.RpcMessage;
+import com.scaiz.zrpc.rpc.RpcMessage;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -49,5 +49,9 @@ public class MessageFuture {
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
+    }
+
+    public void setRequestMessage(RpcMessage requestMessage) {
+        this.requestMessage = requestMessage;
     }
 }

@@ -1,6 +1,6 @@
 package com.scaiz.zrpc.protocol;
 
-import com.scaiz.zrpc.RpcMessage;
+import com.scaiz.zrpc.rpc.RpcMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;

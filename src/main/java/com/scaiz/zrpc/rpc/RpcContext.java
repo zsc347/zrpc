@@ -1,4 +1,4 @@
-package com.scaiz.zrpc;
+package com.scaiz.zrpc.rpc;
 
 public class RpcContext {
     private String version;
