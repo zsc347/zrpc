@@ -1,9 +1,9 @@
 package com.scaiz.zrpc.netty;
 
-import com.scaiz.zrpc.rpc.RemoteService;
 import com.scaiz.zrpc.common.NamedThreadFactory;
 import com.scaiz.zrpc.protocol.ProtocolV1Decoder;
 import com.scaiz.zrpc.protocol.ProtocolV1Encoder;
+import com.scaiz.zrpc.rpc.RemoteService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -13,6 +13,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -67,11 +68,11 @@ public abstract class AbstractRpcRemoteServer extends AbstractRpcRemote implemen
         super(messageExecutor);
         this.nettyServerConfig = config;
         this.serverBootstrap = new ServerBootstrap();
-        this.eventLoopGroupBoss = new EpollEventLoopGroup(
+        this.eventLoopGroupBoss = new NioEventLoopGroup(
                 nettyServerConfig.getBossThreadSize(),
                 new NamedThreadFactory(true, config.getBossThreadPrefix(),
                         config.getBossThreadSize()));
-        this.eventLoopGroupWorker = new EpollEventLoopGroup(
+        this.eventLoopGroupWorker = new NioEventLoopGroup(
                 nettyServerConfig.getWorkerThreadSize(),
                 new NamedThreadFactory(true, config.getWorkerThreadPrefix(),
                         config.getWorkerThreadSize()));
@@ -96,8 +97,8 @@ public abstract class AbstractRpcRemoteServer extends AbstractRpcRemote implemen
                         nettyServerConfig.getServerSocketRecvBufSize())
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,
                         new WriteBufferWaterMark(
-                                nettyServerConfig.getWriteBufferHighWaterMark(),
-                                nettyServerConfig.getWriteBufferLowWaterMark()))
+                                nettyServerConfig.getWriteBufferLowWaterMark(),
+                                nettyServerConfig.getWriteBufferHighWaterMark()))
                 .localAddress(new InetSocketAddress(port))
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override

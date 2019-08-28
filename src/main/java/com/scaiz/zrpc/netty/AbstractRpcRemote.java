@@ -10,6 +10,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +103,7 @@ public abstract class AbstractRpcRemote extends ChannelDuplexHandler implements 
 
         if (timeout > 0) {
             try {
-                return messageFuture.get(timeout, TimeUnit.MICROSECONDS);
+                return messageFuture.get(timeout, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 LOGGER.error("wait response error ", e);
                 if (e instanceof TimeoutException) {
@@ -177,6 +179,20 @@ public abstract class AbstractRpcRemote extends ChannelDuplexHandler implements 
                 } else {
                     this.messageExecutor.execute(() -> dispatch(rpcMessage, ctx));
                 }
+            }
+        }
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
+            if (IdleState.READER_IDLE == idleStateEvent.state()) {
+                LOGGER.info("Channel {} read idle", ctx.channel());
+            }
+
+            if (IdleState.WRITER_IDLE == idleStateEvent.state()) {
+                LOGGER.info("Channel {} write idle", ctx.channel());
             }
         }
     }

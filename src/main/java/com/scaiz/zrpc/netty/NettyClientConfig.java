@@ -2,6 +2,9 @@ package com.scaiz.zrpc.netty;
 
 public class NettyClientConfig {
 
+    private String serverAddress = "127.0.0.1";
+    private int serverPort = 8089;
+
     private int clientSelectorThreadSize = 10;
     private String clientSelectorThreadPrefix = "NettyClientSelector";
 
@@ -91,5 +94,17 @@ public class NettyClientConfig {
 
     public void setRpcRequestTimeout(int rpcRequestTimeout) {
         this.rpcRequestTimeout = rpcRequestTimeout;
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public String getServerAddress() {
+        return serverAddress;
+    }
+
+    public void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 }

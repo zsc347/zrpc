@@ -16,13 +16,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
-import io.netty.util.concurrent.EventExecutorGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RpcClientBootStrap implements RemoteClient {
+    private final Logger LOGGER = LoggerFactory.getLogger(RpcClientBootStrap.class);
 
     private final NettyClientConfig clientConfig;
     private final EventLoopGroup eventLoopGroupWorker;
@@ -82,15 +84,18 @@ public class RpcClientBootStrap implements RemoteClient {
     public Channel getNewChannel(InetSocketAddress address) {
         ChannelFuture f = this.bootstrap.connect(address);
         try {
-            f.await(this.clientConfig.getConnectTimeoutMillis(), TimeUnit.MICROSECONDS);
+            f.await(this.clientConfig.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS);
             if (f.isCancelled()) {
+                LOGGER.error("Error occur when try to connect to server", f.cause());
                 throw new RuntimeException("Connect cancelled", f.cause());
             } else if (!f.isSuccess()) {
+                LOGGER.error("Error occur when try to connect to server", f.cause());
                 throw new RuntimeException("Connect failed", f.cause());
             } else {
                 return f.channel();
             }
         } catch (Exception e) {
+            LOGGER.error("Error occur when try to connect to server", e);
             throw new RuntimeException("Cannot connect to rpc server", e);
         }
     }

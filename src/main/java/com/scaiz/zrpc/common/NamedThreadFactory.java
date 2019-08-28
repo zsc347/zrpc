@@ -13,11 +13,16 @@ public class NamedThreadFactory implements ThreadFactory {
     private final AtomicInteger counter = new AtomicInteger(0);
 
 
+    public NamedThreadFactory(String prefix, int totalSize) {
+        this(true, prefix, totalSize);
+    }
+
     public NamedThreadFactory(boolean makeDaemon, String prefix, int totalSize) {
         this.makeDaemon = makeDaemon;
         this.prefix = prefix;
         this.totalSize = totalSize;
     }
+
 
     @Override
     public Thread newThread(Runnable r) {

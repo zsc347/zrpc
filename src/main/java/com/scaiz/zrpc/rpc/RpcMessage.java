@@ -1,5 +1,7 @@
 package com.scaiz.zrpc.rpc;
 
+import com.scaiz.zrpc.protocol.MsgType;
+
 public class RpcMessage {
     private long id;
     private byte msgType;
@@ -28,5 +30,11 @@ public class RpcMessage {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+
+    @Override
+    public String toString() {
+        return "[" + id + "]-[" + MsgType.of(this.msgType) + "]-[" + this.body + "]";
     }
 }

@@ -26,6 +26,7 @@ public class ProtocolV1Encoder extends MessageToByteEncoder<RpcMessage> {
 
             if (msg.getBody() != null) {
                 byte[] body = CodecFactory.getCodec().encode(msg.getBody());
+                out.writeBytes(body);
                 fullLength += body.length;
             }
 

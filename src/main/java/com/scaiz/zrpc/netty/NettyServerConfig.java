@@ -1,31 +1,32 @@
 package com.scaiz.zrpc.netty;
 
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.util.NettyRuntime;
 
 public class NettyServerConfig {
 
-    private int port;
+    private int port = 8089;
 
-    private String bossThreadPrefix;
-    private int bossThreadSize;
+    private String bossThreadPrefix = "Server_Boss";
+    private int bossThreadSize = NettyRuntime.availableProcessors();
 
-    private String workerThreadPrefix;
-    private int workerThreadSize;
+    private String workerThreadPrefix = "Server_Worker";
+    private int workerThreadSize = NettyRuntime.availableProcessors();
 
     private int soBackLogSize = 1024;
-    private int serverSocketSendBufSize = 150*1024;
-    private int serverSocketRecvBufSize = 150*1024;
+    private int serverSocketSendBufSize = 150 * 1024;
+    private int serverSocketRecvBufSize = 150 * 1024;
 
-    private int writeBufferHighWaterMark = 64*1024*1024;
-    private int writeBufferLowWaterMark = 1024*1024;
+    private int writeBufferHighWaterMark = 64 * 1024 * 1024;
+    private int writeBufferLowWaterMark = 1024 * 1024;
 
 
-    private  int maxReadIdleSeconds = 60*60;
+    private int maxReadIdleSeconds = 60 * 60;
 
 
     private int serverShutdownWaitTime = 10; // s
 
-    protected static int WORKER_THREAD_SIZE;
+    protected static int WORKER_THREAD_SIZE = NettyRuntime.availableProcessors();
 
     private boolean enableServerPooledByteBufferAllocator;
 

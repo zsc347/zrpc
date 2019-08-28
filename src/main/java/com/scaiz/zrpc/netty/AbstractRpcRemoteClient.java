@@ -33,8 +33,9 @@ public abstract class AbstractRpcRemoteClient extends AbstractRpcRemote implemen
     @Override
     public void init() {
         clientBootStrap.start();
-        this.serverChannel = clientBootStrap
-                .getNewChannel(new InetSocketAddress("127.0.0.1", 8080));
+        this.serverChannel = clientBootStrap.getNewChannel(
+                new InetSocketAddress(nettyClientConfig.getServerAddress(),
+                        nettyClientConfig.getServerPort()));
         super.init();
     }
 
@@ -75,20 +76,6 @@ public abstract class AbstractRpcRemoteClient extends AbstractRpcRemote implemen
     }
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
-            if (IdleState.READER_IDLE == idleStateEvent.state()) {
-                LOGGER.info("Channel {} read idle", ctx.channel());
-            }
-
-            if (IdleState.WRITER_IDLE == idleStateEvent.state()) {
-                LOGGER.info("Channel {} write idle", ctx.channel());
-            }
-        }
-    }
-
-    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
         LOGGER.info("Exception caught {}", ctx.channel());
@@ -99,7 +86,8 @@ public abstract class AbstractRpcRemoteClient extends AbstractRpcRemote implemen
     @Override
     public Object sendMsgWithResponse(Object msg, long timeout)
             throws TimeoutException {
-        return super.sendAsyncRequestWithResponse(null,
+        return super.sendAsyncRequestWithResponse(
+                null,
                 serverChannel,
                 msg,
                 timeout);
@@ -107,8 +95,7 @@ public abstract class AbstractRpcRemoteClient extends AbstractRpcRemote implemen
 
     @Override
     public Object sendMsgWithResponse(Object msg) throws TimeoutException {
-        return sendMsgWithResponse(msg,
-                nettyClientConfig.getRpcRequestTimeout());
+        return sendMsgWithResponse(msg, nettyClientConfig.getRpcRequestTimeout());
     }
 
 
