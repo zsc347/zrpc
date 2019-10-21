@@ -1,12 +1,11 @@
-package com.scaiz.zrpc.eventbus;
+package com.scaiz.zrpc.dispatcher;
 
 
 import com.scaiz.zrpc.Handler;
+import com.scaiz.zrpc.common.TestUtil;
 import com.scaiz.zrpc.registry.Dispatcher;
 import com.scaiz.zrpc.registry.ReflectUtil;
-import com.scaiz.zrpc.registry.Registry;
 import com.scaiz.zrpc.service.HelloService;
-import com.scaiz.zrpc.service.impl.HelloServiceImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,10 +17,7 @@ public class DispatcherTest {
 
     @BeforeClass
     public static void setup() {
-        HelloService helloService = new HelloServiceImpl();
-        Registry registry = new Registry();
-        registry.register(HelloService.class, helloService);
-        dispatcher = new Dispatcher(registry);
+        dispatcher = TestUtil.buildDefaultDispatcher();
     }
 
     @Test

@@ -3,11 +3,10 @@ package com.scaiz.zrpc.netty;
 import com.scaiz.zrpc.protocol.MsgType;
 import com.scaiz.zrpc.rpc.ClientMessageListener;
 import com.scaiz.zrpc.rpc.ClientMessageSender;
+import com.scaiz.zrpc.rpc.RpcClientInternal;
 import com.scaiz.zrpc.rpc.RpcMessage;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +14,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeoutException;
 
-public abstract class AbstractRpcRemoteClient extends AbstractRpcRemote implements ClientMessageSender {
+public abstract class AbstractRpcRemoteClient extends AbstractRpcRemote implements ClientMessageSender, RpcClientInternal {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRpcRemoteClient.class);
     private final RpcClientBootStrap clientBootStrap;
     private ClientMessageListener clientMessageListener;
